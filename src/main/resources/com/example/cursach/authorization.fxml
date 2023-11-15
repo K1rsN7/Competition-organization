@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane focusTraversable="true" prefHeight="274.0" prefWidth="452.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cursach.Authorization">
+    <children>
+      <ImageView fitHeight="274.0" fitWidth="452.0" pickOnBounds="true">
+         <image>
+            <Image url="@../../../authorization.png" />
+         </image>
+      </ImageView>
+        <Label layoutX="145.0" layoutY="49.0" text="Авторизация" textFill="WHITE">
+            <font>
+                <Font size="27.0" />
+            </font>
+        </Label>
+        <TextField fx:id="login" layoutX="151.0" layoutY="98.0" />
+        <PasswordField fx:id="password" layoutX="151.0" layoutY="148.0" />
+        <TextField fx:id="publicPassword" layoutX="151.0" layoutY="148.0" />
+        <Label layoutX="92.0" layoutY="98.0" text=" Логин" textFill="WHITE">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
+        <Label layoutX="89.0" layoutY="144.0" text="Пароль" textFill="WHITE">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
+        <Label layoutX="452.0" layoutY="157.0" />
+        <Button fx:id="inlet" layoutX="169.0" layoutY="195.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="114.0" style="-fx-background-color: a3a2a8;" text="Вход в систему" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Button>
+        <CheckBox fx:id="isShowPassword" layoutX="316.0" layoutY="152.0" mnemonicParsing="false" onAction="#changeVisibility" text="Показать пароль" textFill="WHITE" />
+        <Button fx:id="idGuest" layoutX="343.0" layoutY="8.0" mnemonicParsing="false" style="-fx-background-color: a3a2a8;" text="Войти как гость" textFill="WHITE" />
+    </children>
+</AnchorPane>

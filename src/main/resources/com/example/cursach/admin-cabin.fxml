@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Point3D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cursach.AdminCabin">
+   <children>
+      <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../admin.png" />
+         </image>
+         <rotationAxis>
+            <Point3D />
+         </rotationAxis>
+      </ImageView>
+      <Label layoutX="231.0" layoutY="24.0" text="Добавление новых пользователей" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label layoutX="21.0" layoutY="19.0" text="Список доступных ролей" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="roles_menu" layoutX="28.0" layoutY="42.0" onAction="#choiceOfRole" prefWidth="150.0" />
+      <Label layoutX="239.0" layoutY="69.0" text="Общие параметры" textFill="WHITE">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="81.0" layoutY="97.0" text="Логин" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="login_input" layoutX="28.0" layoutY="117.0" promptText="Введите логин:" />
+      <Label layoutX="276.0" layoutY="97.0" text="Пароль" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="password_input" layoutX="226.0" layoutY="117.0" promptText="Введите пароль:" />
+      <Label layoutX="482.0" layoutY="97.0" text="ФИО" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="fio_input" layoutX="424.0" layoutY="117.0" promptText="Введите ФИО:" />
+      <Label layoutX="201.0" layoutY="154.0" text="Параметры для спортсменов" textFill="WHITE">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="367.0" layoutY="190.0" text="Биография" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextArea fx:id="biography_input" disable="true" layoutX="205.0" layoutY="207.0" prefHeight="139.0" prefWidth="393.0" promptText="Введите биографию спортсмена:" />
+      <Label layoutX="51.0" layoutY="190.0" text="Дата рождения" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <DatePicker fx:id="birth_date_input" disable="true" editable="false" layoutX="29.0" layoutY="210.0" prefHeight="25.0" prefWidth="149.0" promptText="Выберите дату" />
+      <Label layoutX="46.0" layoutY="246.0" text="Страна рождения" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="birth_country_input" disable="true" layoutX="29.0" layoutY="264.0" promptText="Введите страну:" />
+      <Label layoutX="32.0" layoutY="301.0" text="Название фотографии" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="image_input" disable="true" layoutX="30.0" layoutY="321.0" promptText="Введите имя файла:" />
+      <HBox alignment="CENTER" layoutY="346.0" prefHeight="50.0" prefWidth="600.0">
+         <children>
+            <Button fx:id="add_user" mnemonicParsing="false" onAction="#addUser" style="-fx-background-color: #616161;" text="Добавить" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
+            <Button fx:id="edit_user" mnemonicParsing="false" onAction="#editUser" style="-fx-background-color: #616161;" text="Изменить" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
+            <Button fx:id="delete_user" mnemonicParsing="false" onAction="#deleteUser" style="-fx-background-color: #616161;" text="Удалить" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
+            <Button fx:id="gradingCriteria" alignment="CENTER" mnemonicParsing="false" onAction="#loadGradingCriteria" style="-fx-background-color: #616161;" text="Работа с критериями" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
+            <Button fx:id="exit" mnemonicParsing="false" onAction="#exit" style="-fx-background-color: #616161;" text="Выход" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

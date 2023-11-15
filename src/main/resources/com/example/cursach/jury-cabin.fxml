@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cursach.JuryCabin">
+    <children>
+      <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../jury.png" />
+         </image>
+      </ImageView>
+        <Label layoutX="199.0" layoutY="30.0" text="Выставлениие баллов" textFill="WHITE">
+            <font>
+                <Font size="20.0" />
+            </font>
+        </Label>
+        <Label layoutX="252.0" layoutY="87.0" text="Название соревнования" textFill="WHITE">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Label>
+        <ComboBox fx:id="idCompetition" layoutX="263.0" layoutY="108.0" onAction="#dateUpload" prefWidth="150.0" />
+        <Label layoutX="455.0" layoutY="85.0" text="Дата проведения" textFill="WHITE">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Label>
+        <ComboBox fx:id="idHoldingDate" layoutX="439.0" layoutY="106.0" onAction="#athleteUpload" prefWidth="150.0" />
+        <Label layoutX="269.0" layoutY="176.0" text="Выбор спортсмена" textFill="WHITE">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Label>
+        <ComboBox fx:id="idAthletes" layoutX="261.0" layoutY="199.0" onAction="#criteriaUpload" prefWidth="150.0" />
+        <Button fx:id="save_points" layoutX="435.0" layoutY="297.0" mnemonicParsing="false" onAction="#addedPoints" style="-fx-background-color: #7e7e7e;" text="Сохранить оценку" textFill="WHITE">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Button>
+        <Label layoutX="270.0" layoutY="282.0" text="Количество баллов" textFill="WHITE">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Label>
+
+        <Label layoutX="90.0" layoutY="87.0" text="Фото атлета" textFill="WHITE">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Label>
+      <HBox alignment="CENTER" layoutX="14.0" layoutY="121.0" prefHeight="235.0" prefWidth="235.0">
+         <children>
+              <ImageView fx:id="imageAthlete" fitHeight="235.0" fitWidth="235.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </HBox>
+        <Label layoutX="437.0" layoutY="176.0" text="Критерии оценивания" textFill="WHITE">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Label>
+        <ComboBox fx:id="idCriteria" layoutX="440.0" layoutY="199.0" prefWidth="150.0" />
+      <Button fx:id="exit" layoutX="522.0" layoutY="356.0" mnemonicParsing="false" onAction="#exit" style="-fx-background-color: #7e7e7e;" text="Выход" textFill="WHITE">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Spinner fx:id="points" layoutX="264.0" layoutY="300.0" />
+    </children>
+</AnchorPane>
