@@ -2,7 +2,10 @@ package com.example.cursach;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -12,7 +15,7 @@ import java.net.MalformedURLException;
 import java.sql.SQLException;
 
 public class JuryCabin {
-    DB db = null; // База данных
+    DataBase dataBase = null; // База данных
     @FXML
     private Button exit; // Кнопка выхода
     @FXML
@@ -40,11 +43,13 @@ public class JuryCabin {
 
     @FXML
     void initialize() throws SQLException, ClassNotFoundException, MalformedURLException {
-        db = new DB();
+        dataBase = new DataBase();
         loadImage(); // загружаем фото атлета
-        idCompetition.setItems(FXCollections.observableArrayList(db.getNameCompetition())); // Заполняем соревнования
     }
 
+    void loadCompetition() throws SQLException, ClassNotFoundException {
+        idCompetition.setItems(FXCollections.observableArrayList(dataBase.getNameCompetition(this.idJury, true))); // Заполняем соревнования
+    }
     @FXML
     void dateUpload() throws SQLException, ClassNotFoundException, MalformedURLException {
         /*
@@ -56,7 +61,7 @@ public class JuryCabin {
         idCriteria.setItems(FXCollections.observableArrayList()); // очищаем список критериев
         idHoldingDate.setItems(FXCollections.observableArrayList()); // очищаем список дат проведения
         idHoldingDate.setItems(FXCollections.observableArrayList(
-                db.getHoldingDate(idCompetition.getValue()))); // загружаем данные о датах проведения
+                dataBase.getHoldingDate(idCompetition.getValue(), this.idJury))); // загружаем данные о датах проведения
     }
 
     @FXML
@@ -68,7 +73,7 @@ public class JuryCabin {
         loadImage(); // загружаем фото атлета
         idCriteria.setItems(FXCollections.observableArrayList()); // очищаем список критериев
         idAthletes.setItems(FXCollections.observableArrayList()); // очищаем список спортсменов
-        idAthletes.setItems(FXCollections.observableArrayList(db.getFioAthletes(
+        idAthletes.setItems(FXCollections.observableArrayList(dataBase.getFioAthletes(
                 idCompetition.getValue(), idHoldingDate.getValue()))); // загружаем данные о спортсменах
     }
 
@@ -80,7 +85,7 @@ public class JuryCabin {
          */
         loadImage(); // загружаем фото атлета
         idCriteria.setItems(FXCollections.observableArrayList()); // очищаем список критериев
-        idCriteria.setItems(FXCollections.observableArrayList(db.getAvailableCriteria(idCompetition.getValue(),
+        idCriteria.setItems(FXCollections.observableArrayList(dataBase.getAvailableCriteria(idCompetition.getValue(),
                 idHoldingDate.getValue(), idAthletes.getValue(), this.idJury))); // загружаем данные о критериях оценивания
     }
 
@@ -89,11 +94,11 @@ public class JuryCabin {
         /*
         Функция позволяет внести в базу данных критерии оценивания члена жури
          */
-        if (idCompetition.getValue().length() == 0 || idHoldingDate.getValue().length() == 0 ||
-                idAthletes.getValue().length() == 0 || idCriteria.getValue().length() == 0) {
-            windowMessenger("Не заполнены все параметры ввода до конца");
+        if (idCompetition.getValue() == null || idHoldingDate.getValue() == null ||
+                idAthletes.getValue() == null || idCriteria.getValue() == null) {
+            dataBase.windowMessenger("Не заполнены все параметры ввода до конца");
         } else {
-            db.addPoints(idCompetition.getValue(), idHoldingDate.getValue(), idAthletes.getValue(), idCriteria.getValue(),
+            dataBase.addPoints(idCompetition.getValue(), idHoldingDate.getValue(), idAthletes.getValue(), idCriteria.getValue(),
                     this.idJury, points.getValue()); // добавляем в таблицу базы данных информацию о баллах члена жури
             criteriaUpload(); // обновляем информацию о доступных критериях оценивания
             points.getValueFactory().setValue(5); // Выставляем значение по умолчанию после добавления
@@ -105,7 +110,7 @@ public class JuryCabin {
         Функция позволяет добавить изображение атлета на форму
          */
         // Добавление фотографии спортсмена на форму
-        String name_file = db.getPhotoAthlete(idAthletes.getValue());
+        String name_file = dataBase.getPhotoAthlete(idAthletes.getValue());
         if (name_file.length() > 3) {
             File file = new File("src/main/resources/" + name_file);
             try {
@@ -137,15 +142,5 @@ public class JuryCabin {
         currentStage.close();
     }
 
-    void windowMessenger(String messenger) {
-        /*
-        Функция позволяет вывести окно с сообщением ошибки
-         */
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Ошибка!!!");
-        alert.setHeaderText(String.format(messenger));
-        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new Image("error.png"));
-        alert.showAndWait();
-    }
+
 }

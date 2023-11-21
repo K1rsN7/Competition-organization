@@ -17,9 +17,9 @@
             <Image url="@../../../jury.png" />
          </image>
       </ImageView>
-        <Label layoutX="199.0" layoutY="30.0" text="Выставлениие баллов" textFill="WHITE">
+        <Label layoutX="175.0" layoutY="29.0" text="Выставлениие баллов" textFill="WHITE">
             <font>
-                <Font size="20.0" />
+                <Font name="System Bold" size="23.0" />
             </font>
         </Label>
         <Label layoutX="252.0" layoutY="87.0" text="Название соревнования" textFill="WHITE">

@@ -19,7 +19,7 @@ public class OrganizerCabin {
     public TextArea description; // Описание соревнования
     int idOrganizer; // Идентификатор организатора
     String pathImagePlug = "plug_banner.png"; // Название файла с изображением заглушкой
-    DB db = null; // База данных
+    DataBase dataBase = null; // База данных
     @FXML
     private Button addCompetition; // Кнопка добавления нового соревнования
     @FXML
@@ -32,6 +32,10 @@ public class OrganizerCabin {
     private TextField path_banner; // Название файла с баннером
     @FXML
     private ListView<String> standings; // Турнирная таблица
+    @FXML
+    private ComboBox<String> listJury; // Список членов жюри на соревнование
+    @FXML
+    private ChoiceBox<String> listJuryApply;// Список доступных членов жюри
 
     void setIdOrganizer(int id) {
         /*
@@ -42,14 +46,14 @@ public class OrganizerCabin {
 
     @FXML
     void initialize() {
-        db = new DB(); // Инициализируем базу данных
+        dataBase = new DataBase(); // Инициализируем базу данных
     }
 
     void loadCompetitions() throws SQLException, ClassNotFoundException, MalformedURLException {
         /*
         Функция позволяет загрузить список соревнований
          */
-        listCompetitions.setItems(FXCollections.observableArrayList(db.getCompetition(this.idOrganizer)));
+        listCompetitions.setItems(FXCollections.observableArrayList(dataBase.getCompetition(this.idOrganizer)));
         loadBanner("");
     }
 
@@ -80,16 +84,17 @@ public class OrganizerCabin {
         String nameCompetitions = listCompetitions.getValue();
         String title = nameCompetitions.substring(0, nameCompetitions.indexOf("|"));
         String holding_date = nameCompetitions.substring(nameCompetitions.indexOf("|") + 1);
-        path_banner.setText(db.getPathBanner(title, holding_date));
-        description.setText(db.getDescriptionCompetition(title, holding_date));
+        path_banner.setText(dataBase.getPathBanner(title, holding_date));
+        description.setText(dataBase.getDescriptionCompetition(title, holding_date));
         loadBanner(path_banner.getText());
-
+        listJury.setItems(FXCollections.observableArrayList(dataBase.getListJury(title, holding_date)));
+        listJuryApply.setItems(FXCollections.observableArrayList(dataBase.getListJuryApply(title, holding_date)));
         // Проверяем сформирован ли итоговая турнирная таблица
-        boolean check = db.checkGenerateRating(title, holding_date);
+        boolean check = dataBase.checkGenerateRating(title, holding_date);
         if (check) {
-            standings.setItems(FXCollections.observableArrayList(db.generateRating(title, holding_date)));
+            standings.setItems(FXCollections.observableArrayList(dataBase.generateRating(title, holding_date)));
         } else {
-            standings.setItems(FXCollections.observableArrayList(db.getAthleteList(title, holding_date)));
+            standings.setItems(FXCollections.observableArrayList(dataBase.getAthleteList(title, holding_date)));
         }
     }
 
@@ -98,11 +103,16 @@ public class OrganizerCabin {
         /*
         Функция позволяет сохранить изменения о соревнование
          */
-        String nameCompetitions = listCompetitions.getValue();
-        String title = nameCompetitions.substring(0, nameCompetitions.indexOf("|"));
-        String holding_date = nameCompetitions.substring(nameCompetitions.indexOf("|") + 1);
-        db.saveInfoCompetition(title, holding_date, description.getText(), path_banner.getText());
-        loadInfo();
+        if (listCompetitions.getValue() != null) {
+            String nameCompetitions = listCompetitions.getValue();
+            String title = nameCompetitions.substring(0, nameCompetitions.indexOf("|"));
+            String holding_date = nameCompetitions.substring(nameCompetitions.indexOf("|") + 1);
+            dataBase.saveInfoCompetition(title, holding_date, description.getText(), path_banner.getText());
+            loadInfo();
+        } else {
+            dataBase.windowMessengerError("Выберите сначала соревнование!");
+        }
+
     }
 
     @FXML
@@ -110,10 +120,20 @@ public class OrganizerCabin {
         /*
         Функция позволяет сформировать итоговую турнирную таблицу
          */
-        String nameCompetitions = listCompetitions.getValue();
-        String title = nameCompetitions.substring(0, nameCompetitions.indexOf("|"));
-        String holding_date = nameCompetitions.substring(nameCompetitions.indexOf("|") + 1);
-        standings.setItems(FXCollections.observableArrayList(db.generateRating(title, holding_date)));
+        if (!standings.getItems().isEmpty()) {
+            String nameCompetitions = listCompetitions.getValue();
+            String title = nameCompetitions.substring(0, nameCompetitions.indexOf("|"));
+            String holding_date = nameCompetitions.substring(nameCompetitions.indexOf("|") + 1);
+            boolean flag = dataBase.checkJuryPoints(title, holding_date);
+            if (flag) {
+                standings.setItems(FXCollections.observableArrayList(dataBase.generateRating(title, holding_date)));
+                dataBase.windowMessenger("Рейтинг успешно сформирован");
+            } else {
+                dataBase.windowMessengerError("Не все члены жюри выставили баллы!");
+            }
+        } else {
+            dataBase.windowMessengerError("Выберите сначала соревнование!");
+        }
     }
 
     @FXML
@@ -134,13 +154,14 @@ public class OrganizerCabin {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("organizer-add-competition.fxml"));
         Stage stage = new Stage();
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-        stage.setTitle(currentStage.getTitle());
+        stage.setTitle("Добавление нового соревнования");
         stage.setScene(scene);
         stage.getIcons().add(new Image("iconka.png"));
         stage.show();
         stage.setResizable(false);
         OrganizerAddCompetition controller = fxmlLoader.getController();
         controller.setIdOrganizer(this.idOrganizer);
+        controller.setName(currentStage.getTitle().substring(currentStage.getTitle().indexOf(":") + 2));
         currentStage.close();
     }
 
@@ -149,10 +170,39 @@ public class OrganizerCabin {
         /*
         Функция позволяет отменить соревнование
          */
-        String nameCompetitions = listCompetitions.getValue();
-        String title = nameCompetitions.substring(0, nameCompetitions.indexOf("|"));
-        String holding_date = nameCompetitions.substring(nameCompetitions.indexOf("|") + 1);
-        db.dropCompetition(title, holding_date);
-        loadInfo();
+        if (standings.getItems().size() > 0) {
+            String nameCompetitions = listCompetitions.getValue();
+            String title = nameCompetitions.substring(0, nameCompetitions.indexOf("|"));
+            String holding_date = nameCompetitions.substring(nameCompetitions.indexOf("|") + 1);
+            dataBase.dropCompetition(title, holding_date);
+            loadInfo();
+        } else {
+            dataBase.windowMessengerError("Выберите сначала соревнование!");
+        }
+
     }
+
+    @FXML
+    void applyJury() {
+        /*
+        Функция позволяет зарегистрировать члена жюри на соревнование
+         */
+        try {
+            if (listJuryApply.getValue() != null) {
+                String nameCompetitions = listCompetitions.getValue();
+                String title = nameCompetitions.substring(0, nameCompetitions.indexOf("|"));
+                String holding_date = nameCompetitions.substring(nameCompetitions.indexOf("|") + 1);
+                dataBase.addJuryFromCompetition(title, holding_date, listJuryApply.getValue());
+                listJury.setItems(FXCollections.observableArrayList());
+                listJuryApply.setItems(FXCollections.observableArrayList());
+                listJury.setItems(FXCollections.observableArrayList(dataBase.getListJury(title, holding_date)));
+                listJuryApply.setItems(FXCollections.observableArrayList(dataBase.getListJuryApply(title, holding_date)));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+
+        }
+
+    }
+
+
 }

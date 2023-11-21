@@ -16,7 +16,7 @@ import java.sql.SQLException;
 
 public class UserCabin {
     String pathImagePlug = "plug_banner.png"; // Название файла с изображением заглушкой
-    DB db = null; // База данных
+    DataBase dataBase = null; // База данных
     @FXML
     private ImageView banner; // Баннер чемпионата
     @FXML
@@ -30,7 +30,7 @@ public class UserCabin {
 
     @FXML
     void initialize() throws MalformedURLException, SQLException, ClassNotFoundException {
-        db = new DB(); // Инициализируем базу данных
+        dataBase = new DataBase(); // Инициализируем базу данных
         loadCompetitions(); // Загружаем список соревнований
 
         standings.setCellFactory(stringListView -> {
@@ -61,14 +61,21 @@ public class UserCabin {
                 Scene scene;
                 try {
                     scene = new Scene(fxmlLoader.load(), 600, 400);
-                    stage.setTitle(currentStage.getTitle());
+                    if (item.indexOf(":") > 0) {
+                        stage.setTitle("Информация о спортсмене " + item.substring(item.indexOf(":") + 2, item.indexOf(";")));
+                    } else {
+                        stage.setTitle(item);
+                    }
                     stage.setScene(scene);
                     stage.getIcons().add(new Image("iconka.png"));
                     stage.show();
                     stage.setResizable(false);
                     UserSportsmanCabin controller = fxmlLoader.getController();
-                    controller.setIdSportsman(db.getIdSportsman(fio));
+                    controller.setIdSportsman(dataBase.getIdSportsman(fio));
                     controller.loadInfo();
+                    if (currentStage.getTitle().indexOf(":") > 0) {
+                        controller.setName(currentStage.getTitle().substring(currentStage.getTitle().indexOf(":") + 2));
+                    }
                 } catch (SQLException | ClassNotFoundException | IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -94,7 +101,7 @@ public class UserCabin {
         /*
         Функция позволяет загрузить список соревнований
          */
-        listCompetitions.setItems(FXCollections.observableArrayList(db.getCompetition()));
+        listCompetitions.setItems(FXCollections.observableArrayList(dataBase.getCompetition()));
         File file = new File("src/main/resources/" + pathImagePlug);
         String urlImage = file.toURI().toURL().toString();
         Image image = new Image(urlImage);
@@ -139,15 +146,15 @@ public class UserCabin {
         String holding_date = nameCompetitions.substring(nameCompetitions.indexOf("|") + 1);
 
         // Загружаем на форму описание соревнования и баннер соревнования
-        description.setText(db.getDescriptionCompetition(title, holding_date));
-        String path_banner = db.getPathBanner(title, holding_date);
+        description.setText(dataBase.getDescriptionCompetition(title, holding_date));
+        String path_banner = dataBase.getPathBanner(title, holding_date);
         loadBanner(path_banner);
         // Проверяем сформирован ли итоговая турнирная таблица
-        boolean check = db.checkGenerateRating(title, holding_date);
+        boolean check = dataBase.checkGenerateRating(title, holding_date);
         if (check) {
-            standings.setItems(FXCollections.observableArrayList(db.generateRating(title, holding_date)));
+            standings.setItems(FXCollections.observableArrayList(dataBase.generateRating(title, holding_date)));
         } else {
-            standings.setItems(FXCollections.observableArrayList(db.getAthleteList(title, holding_date)));
+            standings.setItems(FXCollections.observableArrayList(dataBase.getAthleteList(title, holding_date)));
         }
     }
 

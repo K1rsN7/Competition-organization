@@ -47,7 +47,7 @@ public class Authorization {
 
     @FXML
     void initialize() {
-        DB db = new DB(); // Инициализируем базу данных
+        DataBase dataBase = new DataBase(); // Инициализируем базу данных
         publicPassword.setVisible(false); // Скрываем пароль
 
         // Добавляем событие на кнопку для попытки авторизации
@@ -60,11 +60,15 @@ public class Authorization {
 
                 // Проверяем на наличие пустоты
                 if (!login.getText().trim().equals("") & !password.getText().trim().equals("")) {
-                    int a = db.getIdRole(login.getText(), password.getText()); // Получаем идентификатор роди
+                    int idRole = dataBase.getIdRole(login.getText(), password.getText()); // Получаем идентификатор роди
 
                     // Если это пользователь, осуществляем вход от пользователя
-                    if (a == 1) {
-                        name = db.getName(login.getText(), password.getText(), 1);
+                    if (idRole==0){
+                        dataBase.windowMessengerError("Введён неверный логин или пароль");
+                    }
+                    // Если это посетитель, осуществляем вход от посетителя
+                    else if (idRole == 1) {
+                        name = dataBase.getName(login.getText(), password.getText(), 1);
                         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("user-cabin.fxml"));
                         Stage stage = new Stage();
                         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
@@ -77,25 +81,25 @@ public class Authorization {
                     }
 
                     // Если это спортсмен, осуществляем вход от спортсмена
-                    else if (a == 2) {
-                        name = db.getName(login.getText(), password.getText(), 2);
+                    else if (idRole == 2) {
+                        name = dataBase.getName(login.getText(), password.getText(), 2);
                         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("sportsman-cabin.fxml"));
                         Stage stage = new Stage();
                         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-                        stage.setTitle("Личный кабинет спортсмена: " + name);
+                        stage.setTitle("Кабинет соревнований спортсмена: " + name);
                         stage.setScene(scene);
                         stage.getIcons().add(new Image("iconka.png"));
                         stage.show();
                         stage.setResizable(false);
                         SportsmanCabin controller = fxmlLoader.getController();
-                        controller.setIdSportsman(db.getIdSportsman(name));
+                        controller.setIdSportsman(dataBase.getIdSportsman(name));
                         controller.loadCompetitions();
                         System.out.println("LOG: Зашёл спортсмен " + name);
                     }
 
                     // Если это организатор, осуществляем вход от организатора
-                    else if (a == 3) {
-                        name = db.getName(login.getText(), password.getText(), 3);
+                    else if (idRole == 3) {
+                        name = dataBase.getName(login.getText(), password.getText(), 3);
                         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("organizer-cabin.fxml"));
                         Stage stage = new Stage();
                         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
@@ -105,29 +109,30 @@ public class Authorization {
                         stage.show();
                         stage.setResizable(false);
                         OrganizerCabin controller = fxmlLoader.getController();
-                        controller.setIdOrganizer(db.getIdOrganizer(name));
+                        controller.setIdOrganizer(dataBase.getIdOrganizer(name));
                         controller.loadCompetitions();
                         System.out.println("LOG: Зашёл организатор " + name);
                     }
 
                     // Если это член жури, осуществляем вход от члена жури
-                    else if (a == 4) {
-                        name = db.getName(login.getText(), password.getText(), 4);
+                    else if (idRole == 4) {
+                        name = dataBase.getName(login.getText(), password.getText(), 4);
                         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("jury-cabin.fxml"));
                         Stage stage = new Stage();
                         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-                        stage.setTitle("Личный кабинет члена жури: " + name);
+                        stage.setTitle("Личный кабинет члена жюри: " + name);
                         stage.setScene(scene);
                         stage.getIcons().add(new Image("iconka.png"));
                         stage.show();
                         stage.setResizable(false);
                         JuryCabin controller = fxmlLoader.getController();
-                        controller.setIdJury(db.getIdJury(name));
-                        System.out.println("LOG: Зашёл член жури " + name);
+                        controller.setIdJury(dataBase.getIdJury(name));
+                        controller.loadCompetition();
+                        System.out.println("LOG: Зашёл член жюри " + name);
                     }
 
                     // Если это администратор, осуществляем вход от администратора
-                    else if (a == 5) {
+                    else if (idRole == 5) {
                         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("admin-cabin.fxml"));
                         Stage stage = new Stage();
                         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
@@ -140,7 +145,7 @@ public class Authorization {
                     }
                     // Иначе выводим сообщение об ошибке
                     else {
-                        windowMessenger("Такого пользователя не существует");
+                        dataBase.windowMessenger("Такого пользователя не существует");
                     }
 
                     // Очищаем поля ввода
@@ -149,7 +154,7 @@ public class Authorization {
                     publicPassword.setText("");
 
                 } else {
-                    windowMessenger("Пользователь не заполнил поля");
+                   dataBase.windowMessengerError("Не заполнены все поля");
                 }
 
             } catch (SQLException | ClassNotFoundException e) {
@@ -165,27 +170,16 @@ public class Authorization {
                 FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("user-cabin.fxml"));
                 Stage stage = new Stage();
                 Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-                stage.setTitle("Гость");
+                stage.setTitle("Личный кабинет пользователя");
                 stage.setScene(scene);
                 stage.getIcons().add(new Image("iconka.png"));
                 stage.show();
                 stage.setResizable(false);
-                System.out.println("LOG: Зашёл гость");
+                System.out.println("LOG: Зашёл неавторизованный пользователь");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
     }
 
-    void windowMessenger(String messenger) {
-        /*
-        Функция позволяет вывести окно с сообщением ошибки
-         */
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Ошибка!!!");
-        alert.setHeaderText(String.format(messenger));
-        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new Image("error.png"));
-        alert.showAndWait();
-    }
 }

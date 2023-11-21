@@ -7,7 +7,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
@@ -20,7 +19,8 @@ import java.sql.SQLException;
 public class UserSportsmanCabin {
     String pathImagePlug = "plug.png"; // Название файла с изображением заглушкой
     int idSportsman; // Идентификатор спортсмена
-    DB db = null; // База данных
+    String name = null; // ФИО гостя
+    DataBase dataBase = null; // База данных
     @FXML
     private Label FIO; // ФИО спортсмена
     @FXML
@@ -33,8 +33,6 @@ public class UserSportsmanCabin {
     private Button exit; // Кнопка выхода
     @FXML
     private ImageView image_athlete; // Фотография со спортсменом
-    @FXML
-    private StackPane stack;
 
     public void setIdSportsman(int id) {
         /*
@@ -43,19 +41,23 @@ public class UserSportsmanCabin {
         this.idSportsman = id;
     }
 
+    public void setName(String name_f) {
+        this.name = name_f;
+    }
+
     @FXML
     void initialize() {
-        db = new DB(); // Инициализируем базу данных
+        dataBase = new DataBase(); // Инициализируем базу данных
     }
 
     void loadInfo() throws SQLException, ClassNotFoundException, MalformedURLException {
         /*
         Функция позволяет загрузить на форму все данные
          */
-        FIO.setText("ФИО: " + db.getNameAthlete(idSportsman));
-        birth_date.setText("Дата рождения: " + db.getBirthDate(idSportsman));
-        birth_country.setText("Родина: " + db.getBirthCountry(idSportsman));
-        String path_image = db.getImage(idSportsman);
+        FIO.setText("ФИО: " + dataBase.getNameAthlete(idSportsman));
+        birth_date.setText("Дата рождения: " + dataBase.getBirthDate(idSportsman));
+        birth_country.setText("Родина: " + dataBase.getBirthCountry(idSportsman));
+        String path_image = dataBase.getImage(idSportsman);
 
         // Загружаем фотографию
         File file = new File("src/main/resources/" + path_image);
@@ -72,7 +74,7 @@ public class UserSportsmanCabin {
             image_athlete.setImage(image);
         }
 
-        biography.getChildren().add(new Text(db.getBiography(idSportsman)));
+        biography.getChildren().add(new Text(dataBase.getBiography(idSportsman)));
     }
 
     @FXML
@@ -84,7 +86,7 @@ public class UserSportsmanCabin {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("user-cabin.fxml"));
         Stage stage = new Stage();
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-        stage.setTitle(currentStage.getTitle());
+        stage.setTitle(this.name != null ? "Личный кабинет пользователя: " + this.name : "Личный кабинет пользователя");
         stage.setScene(scene);
         stage.getIcons().add(new Image("iconka.png"));
         stage.show();

@@ -17,14 +17,14 @@
             <Image url="@../../../authorization.png" />
          </image>
       </ImageView>
-        <Label layoutX="145.0" layoutY="49.0" text="Авторизация" textFill="WHITE">
+        <Label layoutX="138.0" layoutY="48.0" text="Авторизация" textFill="WHITE">
             <font>
-                <Font size="27.0" />
+                <Font name="System Bold" size="27.0" />
             </font>
         </Label>
-        <TextField fx:id="login" layoutX="151.0" layoutY="98.0" />
-        <PasswordField fx:id="password" layoutX="151.0" layoutY="148.0" />
-        <TextField fx:id="publicPassword" layoutX="151.0" layoutY="148.0" />
+        <TextField fx:id="login" layoutX="151.0" layoutY="98.0" promptText="Введите логин:" />
+        <PasswordField fx:id="password" layoutX="151.0" layoutY="148.0" promptText="Введите пароль:" />
+        <TextField fx:id="publicPassword" layoutX="151.0" layoutY="148.0" promptText="Введите пароль:" />
         <Label layoutX="92.0" layoutY="98.0" text=" Логин" textFill="WHITE">
             <font>
                 <Font size="16.0" />
@@ -36,7 +36,7 @@
             </font>
         </Label>
         <Label layoutX="452.0" layoutY="157.0" />
-        <Button fx:id="inlet" layoutX="169.0" layoutY="195.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="114.0" style="-fx-background-color: a3a2a8;" text="Вход в систему" textFill="WHITE">
+        <Button fx:id="inlet" layoutX="162.0" layoutY="192.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="128.0" style="-fx-background-color: a3a2a8;" text="Авторизироваться" textFill="WHITE">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>

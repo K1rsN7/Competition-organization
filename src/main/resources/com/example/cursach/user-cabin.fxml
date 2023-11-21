@@ -46,7 +46,7 @@
                 <ListView fx:id="standings" prefHeight="234.0" prefWidth="272.0" />
             </content>
         </ScrollPane>
-        <Button fx:id="exit" layoutX="545.0" layoutY="362.0" mnemonicParsing="false" onAction="#exit" style="-fx-background-color: #707176;" text="Выйти" textFill="WHITE">
+        <Button fx:id="exit" layoutX="545.0" layoutY="362.0" mnemonicParsing="false" onAction="#exit" style="-fx-background-color: #707176;" text="Выход" textFill="WHITE">
             <font>
                 <Font size="13.0" />
             </font>

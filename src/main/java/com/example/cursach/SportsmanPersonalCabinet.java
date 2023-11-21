@@ -18,7 +18,7 @@ import java.sql.SQLException;
 
 public class SportsmanPersonalCabinet {
     int idSportsman; // Идентификатор спортсмена
-    DB db = null; // База данных
+    DataBase dataBase = null; // База данных
     @FXML
     private Label FIO; // ФИО спортсмена
     @FXML
@@ -43,18 +43,18 @@ public class SportsmanPersonalCabinet {
 
     @FXML
     void initialize() {
-        db = new DB(); // Инициализируем базу данных
+        dataBase = new DataBase(); // Инициализируем базу данных
     }
 
     void loadInfo() throws SQLException, ClassNotFoundException, MalformedURLException {
         /*
         Функция позволяет загрузить всю информацию на форму
          */
-        FIO.setText("ФИО: " + db.getNameAthlete(idSportsman));
-        birth_date.setText("Дата рождения: " + db.getBirthDate(idSportsman));
-        birth_country.setText("Родина: " + db.getBirthCountry(idSportsman));
-        path_image.setText(db.getImage(idSportsman));
-        biography.setText(db.getBiography(idSportsman));
+        FIO.setText("ФИО: " + dataBase.getNameAthlete(idSportsman));
+        birth_date.setText("Дата рождения: " + dataBase.getBirthDate(idSportsman));
+        birth_country.setText("Родина: " + dataBase.getBirthCountry(idSportsman));
+        path_image.setText(dataBase.getImage(idSportsman));
+        biography.setText(dataBase.getBiography(idSportsman));
         File file = new File("src/main/resources/" + path_image.getText());
         try {
             String urlImage = file.toURI().toURL().toString();
@@ -68,6 +68,8 @@ public class SportsmanPersonalCabinet {
             Image image = new Image(urlImage);
             image_athlete.setImage(image);
         }
+        Stage currentStage = (Stage) exit.getScene().getWindow();
+        currentStage.setTitle("Личный кабинет спортсмена: " + FIO.getText().substring(FIO.getText().indexOf(":") + 2));
     }
 
     @FXML
@@ -79,7 +81,7 @@ public class SportsmanPersonalCabinet {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("sportsman-cabin.fxml"));
         Stage stage = new Stage();
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-        stage.setTitle(currentStage.getTitle());
+        stage.setTitle("Кабинет соревнований спортсмена: " + FIO.getText().substring(FIO.getText().indexOf(":") + 2));
         stage.setScene(scene);
         stage.getIcons().add(new Image("iconka.png"));
         stage.show();
@@ -95,6 +97,6 @@ public class SportsmanPersonalCabinet {
         /*
         Функция позволяет сохранить изменения в фотографии и автобиографии
          */
-        db.saveChangesAthlete(idSportsman, path_image.getText(), biography.getText());
+        dataBase.saveChangesAthlete(idSportsman, path_image.getText(), biography.getText());
     }
 }

@@ -17,9 +17,9 @@
             <Image url="@../../../organizer-add.png" />
          </image>
       </ImageView>
-        <Label layoutX="167.0" layoutY="8.0" text="Личный кабинет спортсмена" textFill="WHITE">
+        <Label layoutX="170.0" layoutY="14.0" text="Информация о спортсмене" textFill="WHITE">
             <font>
-                <Font size="20.0" />
+                <Font name="System Bold" size="20.0" />
             </font>
         </Label>
         <HBox alignment="CENTER" layoutX="351.0" layoutY="44.0" prefHeight="235.0" prefWidth="235.0">
@@ -42,7 +42,7 @@
                 <Font size="15.0" />
             </font>
         </Label>
-        <Button fx:id="exit" layoutX="521.0" layoutY="355.0" mnemonicParsing="false" onAction="#exitScene" style="-fx-background-color: #707176;" text="Выйти" textFill="WHITE">
+        <Button fx:id="exit" layoutX="521.0" layoutY="355.0" mnemonicParsing="false" onAction="#exitScene" style="-fx-background-color: #707176;" text="Выход" textFill="WHITE">
             <font>
                 <Font size="15.0" />
             </font>

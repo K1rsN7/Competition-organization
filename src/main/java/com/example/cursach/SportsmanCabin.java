@@ -23,7 +23,7 @@ public class SportsmanCabin {
     @FXML
     public ComboBox<String> competitionListApply; // Список доступных соревнований
     String pathImagePlug = "plug_banner.png"; // Название файла с изображением заглушкой
-    DB db = null; // База данных
+    DataBase dataBase = null; // База данных
     int idSportsman; // Идентификатор спортсмена
     @FXML
     private ImageView banner; // Баннер соревнования
@@ -46,7 +46,7 @@ public class SportsmanCabin {
 
     @FXML
     void initialize() throws MalformedURLException, SQLException, ClassNotFoundException {
-        db = new DB(); // Инициализируем базу данных
+        dataBase = new DataBase(); // Инициализируем базу данных
         loadImage(0); // Загружаем баннер на форму
     }
 
@@ -55,8 +55,8 @@ public class SportsmanCabin {
         /*
         Функция позволяет загрузить названия соревнований в которых учавствовал спортсмен
          */
-        competitionList.setItems(FXCollections.observableArrayList(db.getNameCompetition(this.idSportsman)));
-        competitionListApply.setItems(FXCollections.observableArrayList(db.getCompetitionApply(this.idSportsman)));
+        competitionList.setItems(FXCollections.observableArrayList(dataBase.getNameCompetition(this.idSportsman)));
+        competitionListApply.setItems(FXCollections.observableArrayList(dataBase.getCompetitionApply(this.idSportsman)));
     }
 
     @FXML
@@ -68,10 +68,10 @@ public class SportsmanCabin {
         String nameCompetitions = competitionList.getValue();
         String holding_date = nameCompetitions.substring(nameCompetitions.indexOf("|") + 1);
         nameCompetitions = nameCompetitions.substring(0, nameCompetitions.indexOf("|"));
-        idCompetition = db.getIdCompetition(nameCompetitions, holding_date);
+        idCompetition = dataBase.getIdCompetition(nameCompetitions, holding_date);
         loadImage(idCompetition);
-        competitionDescription.getChildren().add(db.getDescription(idCompetition));
-        juryEvaluations.setItems(FXCollections.observableArrayList(db.getJuryEvaluations(idCompetition, idSportsman)));
+        competitionDescription.getChildren().add(dataBase.getDescription(idCompetition));
+        juryEvaluations.setItems(FXCollections.observableArrayList(dataBase.getJuryEvaluations(idCompetition, idSportsman)));
     }
 
     void loadImage(int idCompetition) throws SQLException, ClassNotFoundException, MalformedURLException {
@@ -81,7 +81,7 @@ public class SportsmanCabin {
         // Проверка на существование идентификатора соревнования
         if (idCompetition > 0) {
             // Добавление фотографии спортсмена на форму
-            File file = new File("src/main/resources/" + db.getPhotoCompetition(idCompetition));
+            File file = new File("src/main/resources/" + dataBase.getPhotoCompetition(idCompetition));
             try {
                 String urlImage = file.toURI().toURL().toString();
                 Image image = new Image(urlImage);
@@ -111,7 +111,6 @@ public class SportsmanCabin {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("sportsman-personal-cabin.fxml"));
         Stage stage = new Stage();
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-        stage.setTitle(currentStage.getTitle());
         stage.setScene(scene);
         stage.getIcons().add(new Image("iconka.png"));
         stage.show();
@@ -134,16 +133,38 @@ public class SportsmanCabin {
     @FXML
     void applyCompetition() throws SQLException, ClassNotFoundException {
         /*
-        Функция позволяет зарегистрировать спортсмена на новое мероприятие
+        Функция позволяет зарегистрировать спортсмена на новое соревнование
          */
         if (competitionListApply.getValue() != null) {
             int idCompetition;
             String nameCompetitions = competitionListApply.getValue();
             String holding_date = nameCompetitions.substring(nameCompetitions.indexOf("|") + 1);
             nameCompetitions = nameCompetitions.substring(0, nameCompetitions.indexOf("|"));
-            idCompetition = db.getIdCompetition(nameCompetitions, holding_date);
-            db.addAthletesCompetition(idCompetition, idSportsman);
+            idCompetition = dataBase.getIdCompetition(nameCompetitions, holding_date);
+            dataBase.addAthletesCompetition(idCompetition, idSportsman);
             loadCompetitions();
+            competitionDescription.getChildren().setAll();
+            juryEvaluations.setItems(FXCollections.observableArrayList());
+        } else {
+            dataBase.windowMessengerError("Выберите сначала доступное соревнование из списка!\nВ случае если такого нет, то вы поучаствовали во всех соревнованиях");
         }
     }
+
+    @FXML
+    void loadInfoEventApply() throws MalformedURLException, SQLException, ClassNotFoundException {
+        /*
+        Функция позволяет загрузить описание соревнования
+         */
+        int idCompetition;
+        if (competitionListApply.getValue() != null) {
+            String nameCompetitions = competitionListApply.getValue();
+            String holding_date = nameCompetitions.substring(nameCompetitions.indexOf("|") + 1);
+            nameCompetitions = nameCompetitions.substring(0, nameCompetitions.indexOf("|"));
+            idCompetition = dataBase.getIdCompetition(nameCompetitions, holding_date);
+            loadImage(idCompetition);
+            competitionDescription.getChildren().add(dataBase.getDescription(idCompetition));
+            juryEvaluations.setItems(FXCollections.observableArrayList());
+        }
+    }
+
 }
