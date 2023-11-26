@@ -71,6 +71,11 @@
                   <Font size="13.0" />
                </font>
             </Button>
+            <Button fx:id="juryDrop" alignment="CENTER" mnemonicParsing="false" onAction="#dropJury" style="-fx-background-color: #707176;" text="Уволить" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
             <Button fx:id="generateRating" alignment="CENTER" mnemonicParsing="false" onAction="#generateRating" style="-fx-background-color: #707176;" text="Сформировать рейтинг" textFill="WHITE">
                <font>
                   <Font size="13.0" />
@@ -88,12 +93,12 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <ComboBox fx:id="listJury" layoutX="178.0" layoutY="180.0" prefWidth="150.0" />
       <Label layoutX="5.0" layoutY="207.0" text="Доступные члены жюри:" textFill="WHITE">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <ChoiceBox fx:id="listJuryApply" layoutX="178.0" layoutY="205.0" prefWidth="150.0" onAction="#applyJury" />
+      <ChoiceBox fx:id="listJuryApply" layoutX="178.0" layoutY="205.0" onAction="#applyJury" prefWidth="150.0" />
+      <ChoiceBox fx:id="listJury" layoutX="178.0" layoutY="180.0" prefWidth="150.0" />
    </children>
 </AnchorPane>

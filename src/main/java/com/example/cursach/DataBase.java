@@ -259,15 +259,16 @@ public class DataBase {
          */
 
         ArrayList<String> competitionsList = new ArrayList<>();
-        if (flag){
-        String sql = "SELECT DISTINCT c.title FROM competition AS c JOIN competition_has_jury AS chj ON " +
-                "chj.competition_idCompetition = c.idCompetition WHERE chj.jury_idJury = ? AND c.isRating = 0" ;
-        PreparedStatement statement = getDbConnection().prepareStatement(sql);
-        statement.setInt(1, idJury);
-        ResultSet resultSet = statement.executeQuery();
-        while (resultSet.next()) {
-            competitionsList.add(resultSet.getString("title"));
-        }}
+        if (flag) {
+            String sql = "SELECT DISTINCT c.title FROM competition AS c JOIN competition_has_jury AS chj ON " +
+                    "chj.competition_idCompetition = c.idCompetition WHERE chj.jury_idJury = ? AND c.isRating = 0";
+            PreparedStatement statement = getDbConnection().prepareStatement(sql);
+            statement.setInt(1, idJury);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                competitionsList.add(resultSet.getString("title"));
+            }
+        }
         return competitionsList;
     }
 
@@ -1279,7 +1280,7 @@ public class DataBase {
         PreparedStatement statement = getDbConnection().prepareStatement(sql);
         statement.setInt(1, idCompetition);
         ResultSet resultSet = statement.executeQuery();
-        while(resultSet.next()) list.add(resultSet.getString("FIO"));
+        while (resultSet.next()) list.add(resultSet.getString("FIO"));
         return list;
     }
 
@@ -1297,11 +1298,11 @@ public class DataBase {
         PreparedStatement statement = getDbConnection().prepareStatement(sql);
         statement.setInt(1, idCompetition);
         ResultSet resultSet = statement.executeQuery();
-        while(resultSet.next()) list.add(resultSet.getString("FIO"));
+        while (resultSet.next()) list.add(resultSet.getString("FIO"));
         return list;
     }
 
-    public void addJuryFromCompetition(String title, String holdingDate, String FIO)  {
+    public void addJuryFromCompetition(String title, String holdingDate, String FIO) {
         /*
         Функция позволяет зарегистрировать члена жюри на соревнование
         Input:
@@ -1364,5 +1365,38 @@ public class DataBase {
         while (resultSet.next()) count_jury = resultSet.getInt("count");
 
         return count_points == (count_jury * count_criteria * count_athletes) && count_athletes != 0;
-     }
+    }
+
+    public void dropJury(String fio, String title, String holdingDate) throws SQLException, ClassNotFoundException {
+        /*
+        Функция позволяет убрать члена жюри с соревнования при условии, что он не успел поставить оценки
+        Input:
+            fio - ФИО члена жюри
+            title - название соревнования
+            holdingDate - дата проведения соревнования
+         */
+        int idCompetition = getIdCompetition(title, holdingDate);
+        int idJury = getIdJury(fio);
+        boolean flag = checkGenerateRating(title, holdingDate);
+        if (!flag) {
+            String sql = "SELECT count(*) AS count FROM jury_evaluations WHERE Jury_idJury = ? AND Jury_idCompetition = ?";
+            PreparedStatement statement = getDbConnection().prepareStatement(sql);
+            statement.setInt(1, idJury);
+            statement.setInt(2, idCompetition);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                if (resultSet.getInt("count") < 1) {
+                    sql = "DELETE FROM competition_has_jury WHERE (competition_idCompetition = ?) and (jury_idJury = ?)";
+                    statement = getDbConnection().prepareStatement(sql);
+                    statement.setInt(1, idCompetition);
+                    statement.setInt(2, idJury);
+                    statement.executeUpdate();
+                    windowMessenger(fio + " успешно удалён");
+                } else windowMessengerError(fio + " выставил оценки, его удалить нельзя!");
+            }
+        }
+        else{
+            windowMessengerError("По данному соревнованию уже сформирован рейтинг");
+        }
+    }
 }

@@ -33,7 +33,7 @@ public class OrganizerCabin {
     @FXML
     private ListView<String> standings; // Турнирная таблица
     @FXML
-    private ComboBox<String> listJury; // Список членов жюри на соревнование
+    private ChoiceBox<String>  listJury; // Список членов жюри на соревнование
     @FXML
     private ChoiceBox<String> listJuryApply;// Список доступных членов жюри
 
@@ -198,11 +198,34 @@ public class OrganizerCabin {
                 listJury.setItems(FXCollections.observableArrayList(dataBase.getListJury(title, holding_date)));
                 listJuryApply.setItems(FXCollections.observableArrayList(dataBase.getListJuryApply(title, holding_date)));
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException ignored) {
 
         }
 
     }
 
+    @FXML
+    void dropJury() {
+        /*
+        Функция позволяет уволить члена жюри с соревнования
+         */
+        try {
+            if (listJury.getValue() != null) {
+                String nameCompetitions = listCompetitions.getValue();
+                String title = nameCompetitions.substring(0, nameCompetitions.indexOf("|"));
+                String holding_date = nameCompetitions.substring(nameCompetitions.indexOf("|") + 1);
+                dataBase.dropJury(listJury.getValue(), title, holding_date);
+                listJury.setItems(FXCollections.observableArrayList());
+                listJuryApply.setItems(FXCollections.observableArrayList());
+                listJury.setItems(FXCollections.observableArrayList(dataBase.getListJury(title, holding_date)));
+                listJuryApply.setItems(FXCollections.observableArrayList(dataBase.getListJuryApply(title, holding_date)));
+            }
+            else{
+                dataBase.windowMessengerError("Выберите для начала члена жюри");
+            }
+        } catch (SQLException | ClassNotFoundException ignored) {
+
+        }
+    }
 
 }
